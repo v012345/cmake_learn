@@ -1,0 +1,3 @@
+add_subdirectory(formatLogFile)
+add_subdirectory(RecurseDir)
+add_subdirectory(CompressLogFile)
