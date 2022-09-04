@@ -7,8 +7,10 @@ message(STATUS ${CMAKE_BINARY_DIR})
 message(STATUS ${CMAKE_CURRENT_BINARY_DIR})
 message(STATUS ${PROJECT_BINARY_DIR})
 add_subdirectory(math)
+
 # include_directories("${PROJECT_SOURCE_DIR}/../include/math")
 # include_directories("${CMAKE_SOURCE_DIR}/include/math")
-
+add_executable(ProducerAndConsumer ProducerAndConsumer.cpp)
 add_executable(${PROJECT_NAME} main.cpp)
+
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include/math")
