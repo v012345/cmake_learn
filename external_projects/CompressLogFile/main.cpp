@@ -6,66 +6,55 @@
 #include <regex>
 std::set<std::string> files;
 
-void getFilesInDir(std::filesystem::path path)
+void compressLogFiles(std::filesystem::path log_path)
 {
     std::ifstream LogFile;
-    for (auto &v : std::filesystem::directory_iterator(path))
+    for (auto &&log_file : std::filesystem::directory_iterator(log_path))
     {
-        //
-
-        if (v.is_directory())
+        if (log_file.is_regular_file() && log_file.path().extension().string() == ".txt")
         {
-            std::string fileName = v.path().filename().string();
-
-            if (fileName == "log")
+            LogFile.open(log_file.path());
+            std::string line;
+            if (LogFile.is_open())
             {
-                for (auto &log : std::filesystem::directory_iterator(v))
+                while (getline(LogFile, line))
                 {
-                    if (log.is_regular_file() && log.path().extension().string() == ".txt")
-                    {
-                        // std::cout << log.path() << std::endl;
-                        LogFile.open(log.path());
-                        std::string line;
-                        // std::smatch matches;
-                        // std::regex rgx("/([a-zA-Z0-9_\\.]+\\.(?:png|jpg)).*");
-                        // std::regex json("/([a-zA-Z0-9_\\.]+\\.(?:json))$");
-                        // std::regex replaceJson("(.*)json$");
-                        if (LogFile.is_open())
-                        {
-                            while (getline(LogFile, line))
-                            {
-                                files.insert(line);
-
-                                //     if (std::regex_search(line, matches, json))
-                                // {
-                                //     line = regex_replace(line, replaceJson, "$1png");
-                                // }
-
-                                // if (std::regex_search(line, matches, rgx))
-                                // {
-                                //     for (size_t i = 1; i < matches.size(); ++i)
-                                //     {
-                                //         // std::cout << matches[i].str() << std::endl;
-                                //         files.insert(matches[i].str());
-                                //     }
-                                // }
-                            }
-                            LogFile.close();
-                        }
-                    }
+                    files.insert(line);
                 }
+                LogFile.close();
             }
         }
     }
 }
 int main(int argc, char const *argv[])
 {
-    getFilesInDir(std::filesystem::current_path());
-    std::ofstream myfile;
-    myfile.open("CompressedLogFile.txt", std::ios::out);
-    for (auto &file : files)
+    if (!std::filesystem::is_directory(std::filesystem::current_path().parent_path().append("log")))
     {
-        myfile << file << std::endl;
+        std::filesystem::create_directory(std::filesystem::current_path().parent_path().append("log"));
+    }
+    if (!std::filesystem::is_directory(std::filesystem::current_path().parent_path().append("config")))
+    {
+        std::filesystem::create_directory(std::filesystem::current_path().parent_path().append("config"));
+    }
+    if (std::filesystem::is_regular_file(std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt")))
+    {
+        std::filesystem::copy_file(
+            std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt"),
+            std::filesystem::current_path().parent_path().append("log").append("Compressed Log File.txt"),
+            std::filesystem::copy_options::overwrite_existing);
+    }
+
+    compressLogFiles(std::filesystem::current_path().parent_path().append("log"));
+    std::ofstream myfile;
+    myfile.open(std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt"), std::ios::out);
+    std::smatch matches;
+    std::regex rgx("/");
+    for (auto &&file : files)
+    {
+        if (std::regex_search(file, matches, rgx))
+        {
+            myfile << file << std::endl;
+        }
     }
     myfile.close();
     return 0;
