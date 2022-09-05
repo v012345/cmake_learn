@@ -1,3 +1,5 @@
 add_subdirectory(formatLogFile)
 add_subdirectory(RecurseDir)
 add_subdirectory(CompressLogFile)
+add_subdirectory(FilterUnusedImages)
+add_subdirectory(ReplaceImageByImages)

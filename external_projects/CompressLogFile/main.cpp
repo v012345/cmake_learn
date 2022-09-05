@@ -28,6 +28,8 @@ void compressLogFiles(std::filesystem::path log_path)
 }
 int main(int argc, char const *argv[])
 {
+    // std::cout << "处理日志文件" << std::endl;
+    std::cout << "处理日志文件" << std::endl;
     if (!std::filesystem::is_directory(std::filesystem::current_path().parent_path().append("log")))
     {
         std::filesystem::create_directory(std::filesystem::current_path().parent_path().append("log"));
@@ -38,6 +40,11 @@ int main(int argc, char const *argv[])
     }
     if (std::filesystem::is_regular_file(std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt")))
     {
+        if (std::filesystem::is_regular_file(std::filesystem::current_path().parent_path().append("log").append("Compressed Log File.txt")))
+        {
+            std::filesystem::remove(std::filesystem::current_path().parent_path().append("log").append("Compressed Log File.txt"));
+        }
+
         std::filesystem::copy_file(
             std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt"),
             std::filesystem::current_path().parent_path().append("log").append("Compressed Log File.txt"),

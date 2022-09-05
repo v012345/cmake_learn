@@ -27,11 +27,8 @@ void getFilesInDir(fs::path path, fs::path exclude_path)
 
 int main()
 {
-#if defined(_WIN64) || defined(_WIN32) || defined(__CYGWIN__)
-    system("chcp 65001");
-#endif
-    std::cout << "递归父级目录 , 除当文件夹" << std::endl;
-    std::cout << fs::current_path().string() << std::endl;
+    std::cout << "递归项目目录 , 除tools文件夹" << std::endl;
+    // std::cout << fs::current_path().string() << std::endl;
 
     auto project_path = fs::current_path().parent_path().parent_path();
     auto tool_path = fs::current_path().parent_path();

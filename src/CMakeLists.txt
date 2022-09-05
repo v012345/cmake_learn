@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(cmake_learn)
+project(setup_click_me)
 message(STATUS ${PROJECT_SOURCE_DIR})
 message(STATUS ${CMAKE_CURRENT_SOURCE_DIR})
 message(STATUS ${CMAKE_SOURCE_DIR})

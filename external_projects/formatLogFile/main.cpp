@@ -4,67 +4,54 @@
 #include <string>
 #include <set>
 #include <regex>
-std::set<std::string> files;
 
-void getFilesInDir(std::filesystem::path path)
+int main(int argc, char const *argv[])
 {
-    std::ifstream LogFile;
-    for (auto &v : std::filesystem::directory_iterator(path))
+    std::cout << "提取已经使用的文件" << std::endl;
+    std::filesystem::path allImageLog = std::filesystem::current_path().parent_path().append("config").append("Compressed Log File.txt");
+    if (!std::filesystem::is_regular_file(allImageLog))
     {
-        //
-
-        if (v.is_directory())
+        std::cout << "缺少 Compressed Log File.txt" << std::endl;
+        exit(1);
+    }
+    std::ifstream LogFile;
+    LogFile.open(allImageLog);
+    std::set<std::string> files;
+    std::string line;
+    std::smatch matches;
+    std::regex rgx("/([a-zA-Z0-9_\\.]+\\.(?:png|jpg))$");
+    std::regex json("/([a-zA-Z0-9_\\.]+\\.(?:json))$");
+    std::regex replaceJson("(.*)json$");
+    if (LogFile.is_open())
+    {
+        while (getline(LogFile, line))
         {
-            std::string fileName = v.path().filename().string();
 
-            if (fileName == "log")
+            if (std::regex_search(line, matches, json))
             {
-                for (auto &log : std::filesystem::directory_iterator(v))
+                line = regex_replace(line, replaceJson, "$1png");
+            }
+
+            if (std::regex_search(line, matches, rgx))
+            {
+                for (size_t i = 1; i < matches.size(); ++i)
                 {
-                    if (log.is_regular_file() && log.path().extension().string() == ".txt")
-                    {
-                        // std::cout << log.path() << std::endl;
-                        LogFile.open(log.path());
-                        std::string line;
-                        std::smatch matches;
-                        std::regex rgx("/([a-zA-Z0-9_\\.]+\\.(?:png|jpg)).*");
-                        std::regex json("/([a-zA-Z0-9_\\.]+\\.(?:json))$");
-                        std::regex replaceJson("(.*)json$");
-                        if (LogFile.is_open())
-                        {
-                            while (getline(LogFile, line))
-                            {
-
-                                if (std::regex_search(line, matches, json))
-                                {
-                                    line = regex_replace(line, replaceJson, "$1png");
-                                }
-
-                                if (std::regex_search(line, matches, rgx))
-                                {
-                                    for (size_t i = 1; i < matches.size(); ++i)
-                                    {
-                                        // std::cout << matches[i].str() << std::endl;
-                                        files.insert(matches[i].str());
-                                    }
-                                }
-                            }
-                            LogFile.close();
-                        }
-                    }
+                    files.insert(matches[i].str());
                 }
             }
         }
+        LogFile.close();
     }
-}
-int main(int argc, char const *argv[])
-{
-    getFilesInDir(std::filesystem::current_path());
+
     std::ofstream myfile;
-    myfile.open("usingImages.txt", std::ios::out);
+    std::filesystem::path output = std::filesystem::current_path().parent_path().append("config").append("Using Images.txt");
+    myfile.open(output, std::ios::out);
     for (auto &file : files)
     {
-        myfile << file << std::endl;
+        if (file != "")
+        {
+            myfile << file << std::endl;
+        }
     }
     myfile.close();
     return 0;

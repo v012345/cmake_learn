@@ -3,8 +3,52 @@
 int main(int argc, char const *argv[])
 {
 
-    // std::cout << system("cd .\\bin") << std::endl;
-    std::cout << system(".\\GetAllFilesInProject.exe") << std::endl;
-    std::cout << system(".\\CompressLogFile.exe") << std::endl;
+#if defined(_WIN64) || defined(_WIN32) || defined(__CYGWIN__)
+    system("chcp 65001");
+#endif
+
+    if (!system(".\\GetAllFilesInProject.exe"))
+    {
+
+        std::cout << "完成" << std::endl;
+    }
+    else
+    {
+        exit(1);
+    }
+    if (!system(".\\CompressLogFile.exe"))
+    {
+
+        std::cout << "完成" << std::endl;
+    }
+    else
+    {
+        exit(1);
+    }
+    if (!system(".\\GenUsingImages.exe"))
+    {
+
+        std::cout << "完成" << std::endl;
+    }
+    else
+    {
+        exit(1);
+    }
+    if (!system(".\\FilterUnusedImages.exe"))
+    {
+
+        std::cout << "完成" << std::endl;
+    }
+    else
+    {
+        exit(1);
+    }
+
+    system("git add ..\\config");
+    system("git commit -m save_config");
+
+    std::cout << "完成" << std::endl;
+    std::cout << "请手动点击 ReplaceAnimation.exe" << std::endl;
+    system("pause");
     return 0;
 }
