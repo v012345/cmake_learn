@@ -12,5 +12,6 @@ add_subdirectory(math)
 # include_directories("${CMAKE_SOURCE_DIR}/include/math")
 add_executable(ProducerAndConsumer ProducerAndConsumer.cpp)
 add_executable(${PROJECT_NAME} main.cpp)
+add_executable(Lambda Lambda.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/include/math")

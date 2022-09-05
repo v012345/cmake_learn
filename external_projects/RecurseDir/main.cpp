@@ -31,6 +31,7 @@ int main()
     system("chcp 65001");
 #endif
     std::cout << "递归父级目录 , 除当文件夹" << std::endl;
+    std::cout << fs::current_path().string() << std::endl;
 
     auto project_path = fs::current_path().parent_path().parent_path();
     auto tool_path = fs::current_path().parent_path();
@@ -46,7 +47,6 @@ int main()
 
     auto log_path = tool_path;
     log_path.append("log");
-
     if (!fs::is_directory(log_path))
     {
         fs::create_directory(log_path);
