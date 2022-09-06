@@ -19,8 +19,8 @@ int main(int argc, char const *argv[])
     std::set<std::string> files;
     std::string line;
     std::smatch matches;
-    std::regex rgx("/([a-zA-Z0-9_\\.]+\\.(?:png|jpg))$");
-    std::regex json("/([a-zA-Z0-9_\\.]+\\.(?:json))$");
+    std::regex rgx("/([^/]+\\.(?:png|jpg))$");
+    std::regex json("/([^/]+\\.(?:json))$");
     std::regex replaceJson("(.*)json$");
     if (LogFile.is_open())
     {
